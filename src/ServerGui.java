@@ -20,11 +20,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-public class ServerGuiAndMain extends JPanel {
+public class ServerGui extends JPanel {
 	JPanel chatClient = new JPanel();
-	JTextField inputTextTab = new JTextField(50);
+	JTextField inputTextTab = new JTextField("server input message",50);
 	JTextArea outputTextTab = new JTextArea(5, 5);
-	JButton sendMessageButton = new JButton("Send");
 	GridBagConstraints gridBagCon = new GridBagConstraints();
 
 	private ObjectOutputStream output;
@@ -32,8 +31,7 @@ public class ServerGuiAndMain extends JPanel {
 	private ServerSocket server;
 	private Socket connection;
 
-	public ServerGuiAndMain() {
-
+	public ServerGui() {
 		gridBagCon.weightx = 0.5;
 		gridBagCon.weighty = 1.0;
 		gridBagCon.fill = GridBagConstraints.BOTH;
@@ -46,12 +44,9 @@ public class ServerGuiAndMain extends JPanel {
 
 		gridBagCon.gridx = 0;
 		gridBagCon.gridy = 0;
-		add(new JScrollPane(outputTextTab));
 		add(outputTextTab, gridBagCon);
+		add(new JScrollPane(outputTextTab),gridBagCon);
 
-		gridBagCon.gridx = 1;
-		gridBagCon.gridy = 1;
-		add(sendMessageButton, gridBagCon);
 
 		gridBagCon.gridx = 0;
 		gridBagCon.gridy = 1;
@@ -126,10 +121,9 @@ public class ServerGuiAndMain extends JPanel {
 				message = (String) input.readObject();
 				showMessage("\n" + message);
 			} catch (ClassNotFoundException classNotFoundException) {
-				showMessage("\n idk wtf that user send ");
+				showMessage("\n idk what that user sent ");
 			}
 		} while (!message.equals("CLIENT - END"));// if the users type END the
-													// chat will stop
 	}
 
 	// close streams and sockets after you are done chatting
@@ -170,12 +164,13 @@ public class ServerGuiAndMain extends JPanel {
 	private void ableToType(final boolean trueOrFalse) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				inputTextTab.setText("");
 				inputTextTab.setEditable(trueOrFalse);
 			}
 		});
 	}
 
-	public void buildFrame(ImageIcon icon, ServerGuiAndMain object, JFrame frame, String titleFrame) {
+	public void buildFrame(ImageIcon icon, ServerGui object, JFrame frame, String titleFrame) {
 		frame.setTitle(titleFrame);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);

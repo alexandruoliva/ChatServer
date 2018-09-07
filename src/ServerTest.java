@@ -5,7 +5,7 @@ public class ServerTest {
 	public static void main(String[] args) {
 		ImageIcon icon = new ImageIcon("C://Users/aoliva/Desktop/JAVA WORKSPACE/ChatServer/download.png");
 
-		ServerGuiAndMain serverApp = new ServerGuiAndMain();
+		ServerGui serverApp = new ServerGui();
 
 		serverApp.setSize(700, 700);
 		serverApp.setVisible(true);
