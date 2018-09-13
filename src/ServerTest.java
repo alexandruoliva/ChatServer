@@ -13,9 +13,8 @@ public class ServerTest {
 		JFrame frame = new JFrame();
 
 		serverApp.buildFrame(icon, serverApp, frame, "Server");
-		
+
 		serverApp.startRunning();
-		
-		
+
 	}
 }

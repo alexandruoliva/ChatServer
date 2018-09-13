@@ -149,6 +149,8 @@ public class ServerGui extends JPanel {
 		} catch (IOException ioException) {
 			outputTextTab.append("\n ERROR: CANT'T SEND THAT MESSAGE");
 		}
+		inputTextTab.setText(null);
+		
 	}
 
 	// updates chatWindow
