@@ -1,7 +1,7 @@
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-public class ServerTest {
+public class ServerMain {
 	public static void main(String[] args) {
 		ImageIcon icon = new ImageIcon("C://Users/aoliva/Desktop/JAVA WORKSPACE/ChatServer/download.png");
 

@@ -20,7 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-public class ServerGui extends JPanel {
+public class ServerGui extends JPanel  {
 	JPanel chatClient = new JPanel();
 	JTextField inputTextTab = new JTextField("server input message",50);
 	JTextArea outputTextTab = new JTextArea(5, 5);
@@ -29,8 +29,13 @@ public class ServerGui extends JPanel {
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private ServerSocket server;
-	private Socket connection;
+	private Socket socket;
+	private static final int PORT = 6789;
 
+	
+	
+	
+	
 	public ServerGui() {
 		gridBagCon.weightx = 0.5;
 		gridBagCon.weighty = 1.0;
@@ -67,9 +72,16 @@ public class ServerGui extends JPanel {
 
 	// set up and run server
 	public void startRunning() {
+		server =null;
+		socket=null;
+		
+		try {
+			server =new ServerSocket(PORT,100);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		try {
 			// 6789 port number
-			server = new ServerSocket(6789, 100);
 			while (true) {
 				try {
 
@@ -91,22 +103,34 @@ public class ServerGui extends JPanel {
 
 	// wait for connection, the display connection information
 	private void waitForConnection() throws IOException {
+		int counter =0;
 		showMessage("Waiting for someone to connect....\n");
 
 		// listens to the connection and accepts it
-		connection = server.accept();
-		showMessage("Now connected to " + connection.getInetAddress().getHostName());
+		socket = server.accept();
+		counter ++;
+		showMessage("Client number "+counter +" has connected \n");
+		
+		showMessage("Now connected to " + socket.getInetAddress().getHostName());
+		
+		Thread t= new ClientHandler(output, input, server, socket);
+		t.start();
 
 	}
 
 	// get stream to send and receive data
 	private void setupStreams() throws IOException {
+		
+		
 		// creating the pathway that allows us to connect to another computer
-		output = new ObjectOutputStream(connection.getOutputStream());
+		output = new ObjectOutputStream(socket.getOutputStream());
 		// flushes the data bytes that are leftover into the stream
 		output.flush();
-		input = new ObjectInputStream(connection.getInputStream());
+		input = new ObjectInputStream(socket.getInputStream());
 		showMessage("\n Streams are now setup! \n");
+		
+	
+		
 
 	}
 
@@ -133,7 +157,7 @@ public class ServerGui extends JPanel {
 		try {
 			output.close();
 			input.close();
-			connection.close();
+			socket.close();
 		} catch (IOException ioException) {
 			ioException.printStackTrace();
 		}
@@ -161,6 +185,13 @@ public class ServerGui extends JPanel {
 			}
 		});
 	}
+	private void showMessage(final String text,int counter) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				outputTextTab.append(text);
+			}
+		});
+	}
 
 	// let the user type stuff into their box
 	private void ableToType(final boolean trueOrFalse) {
@@ -182,6 +213,7 @@ public class ServerGui extends JPanel {
 		frame.pack();
 		
 	}
+
 
 
 
