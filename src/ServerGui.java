@@ -4,28 +4,31 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
-public class ServerGui extends JPanel  {
+import com.client.observer.Observer;
+import com.client.observer.Subject;
+
+
+
+public class ServerGui extends JPanel  implements Subject{
 	JPanel chatClient ;
 	JTextField inputTextTab ;
 	JTextArea outputTextTab ;
 	GridBagConstraints gridBagCon ;
-
+	
+	List<Observer> observers;
+	
+	
+	
 	public JTextField getInputTextTab() {
 		return inputTextTab;
 	}
@@ -47,7 +50,10 @@ public class ServerGui extends JPanel  {
 
 
 	public ServerGui() {
+		
+		observers = new ArrayList<>();
 		initGuiElements();
+		
 
 		inputTextTab.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -99,6 +105,31 @@ public class ServerGui extends JPanel  {
 		frame.setIconImage(icon.getImage());
 		frame.add(object);
 		frame.pack();
+		
+	}
+
+
+	@Override
+	public void addObserver(Observer observer) {
+		observers.add(observer);
+		
+	}
+
+
+	@Override
+	public void deleteObserver(Observer deletedObserver) {
+		int indexOfList = observers.indexOf(deletedObserver);
+		System.out.println("Observer " + (indexOfList + 1) + "deleted");
+		observers.remove(indexOfList);
+	}
+
+
+	@Override
+	public void notifyObservers() {
+		System.out.println("notifying all services , when somethign changes in the client GUI ");
+		for (Observer observer : observers) {
+			observer.update(this);
+		}
 		
 	}
 
