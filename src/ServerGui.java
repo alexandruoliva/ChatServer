@@ -28,7 +28,7 @@ public class ServerGui extends JPanel  {
 
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
-	private ServerSocket server;
+	private ServerSocket serverSocket;
 	private Socket socket;
 	private static final int PORT = 6789;
 
@@ -72,11 +72,11 @@ public class ServerGui extends JPanel  {
 
 	// set up and run server
 	public void startRunning() {
-		server =null;
+		serverSocket =null;
 		socket=null;
 		
 		try {
-			server =new ServerSocket(PORT,100);
+			serverSocket =new ServerSocket(PORT,100);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -95,6 +95,8 @@ public class ServerGui extends JPanel  {
 				} finally {
 					closeChat();
 				}
+				Thread t= new ClientHandler(output, input, socket);
+				t.start();
 			}
 		} catch (IOException ioException) {
 			ioException.printStackTrace();
@@ -107,15 +109,13 @@ public class ServerGui extends JPanel  {
 		showMessage("Waiting for someone to connect....\n");
 
 		// listens to the connection and accepts it
-		socket = server.accept();
+		socket = serverSocket.accept();
 		counter ++;
 		showMessage("Client number "+counter +" has connected \n");
 		
 		showMessage("Now connected to " + socket.getInetAddress().getHostName());
 		
-		Thread t= new ClientHandler(output, input, server, socket);
-		t.start();
-
+	
 	}
 
 	// get stream to send and receive data
