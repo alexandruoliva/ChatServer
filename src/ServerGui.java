@@ -58,7 +58,7 @@ public class ServerGui extends JPanel  implements Subject{
 		inputTextTab.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				// getActionCommand sends the message;
-				sendMessage(event.getActionCommand());
+//				sendMessage(event.getActionCommand());
 				outputTextTab.setText("");
 
 			}

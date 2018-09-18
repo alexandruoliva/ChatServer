@@ -7,7 +7,10 @@ import java.net.Socket;
 
 import javax.swing.SwingUtilities;
 
-public class ServerService {
+import com.client.observer.Observer;
+import com.client.observer.Subject;
+
+public class ServerService implements Observer {
 	
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
@@ -15,6 +18,17 @@ public class ServerService {
 	private Socket socket;
 	private static final int PORT = 6789;
 	
+	
+	static ServerGui serverGui;
+	
+	public String message ="";
+	public ServerService(ServerGui serverGui){
+		this.serverGui=serverGui;
+	}
+	
+	public ServerService(){
+		
+	}
 	
 	// set up and run server
 		public void startRunning() {
@@ -83,7 +97,7 @@ public class ServerService {
 		// during the chat conversation
 		private void whileChatting() throws IOException {
 			String message = "You are now connected ! ";
-			sendMessage(message);
+//			sendMessage(message);
 			ableToType(true);
 			do {
 
@@ -111,15 +125,17 @@ public class ServerService {
 		}
 
 		// send a message to client
-		private void sendMessage(String message) {
+		private void sendMessage(ServerGui serverGui) {
 			try {
+				message=serverGui.getInputTextTab().getText();
+				
 				output.writeObject("SERVER - " + message);
 				output.flush();
 				showMessage("\nSERVER -" + message);
 			} catch (IOException ioException) {
-				outputTextTab.append("\n ERROR: CANT'T SEND THAT MESSAGE");
+				serverGui.getOutputTextTab().append("\n ERROR: CANT'T SEND THAT MESSAGE");
 			}
-			inputTextTab.setText(null);
+			serverGui.getInputTextTab().setText(null);
 			
 		}
 
@@ -127,14 +143,14 @@ public class ServerService {
 		private void showMessage(final String text) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					outputTextTab.append(text);
+					serverGui.getOutputTextTab().append(text);
 				}
 			});
 		}
 		private void showMessage(final String text,int counter) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					outputTextTab.append(text);
+					serverGui.getOutputTextTab().append(text);
 				}
 			});
 		}
@@ -143,10 +159,15 @@ public class ServerService {
 		private void ableToType(final boolean trueOrFalse) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					inputTextTab.setText("");
-					inputTextTab.setEditable(trueOrFalse);
+					serverGui.getInputTextTab().setText("");
+					serverGui.getInputTextTab().setEditable(trueOrFalse);
 				}
 			});
+		}
+
+		@Override
+		public void update(Subject subject) {
+			sendMessage(serverGui);
 		}
 
 }
