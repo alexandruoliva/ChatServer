@@ -6,10 +6,14 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import com.client.gui.ClientGui;
 import com.client.observer.Observer;
 import com.client.observer.Subject;
+import com.client.service.ClientService;
 import com.server.clienthandler.ClientHandler;
 import com.server.gui.ServerGui;
 
@@ -39,27 +43,40 @@ public class ServerService implements Observer {
 			socket=null;
 			
 			try {
-				serverSocket =new ServerSocket(PORT,100);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
 				// 6789 port number
 				while (true) {
-					try {
+					
 
+					try {
+						serverSocket =new ServerSocket(PORT,100);
 						waitForConnection();
 
 						setupStreams();
-
+						
 						whileChatting();
 					} catch (EOFException eofException) {
 						showMessage("\n Server ended the connection!");
 					} finally {
 						closeChat();
 					}
-					Thread t= new ClientHandler(output, input, socket);
-					t.start();
+//					Thread t= new ClientHandler(output, input, socket);
+//					t.start();
+					
+					
+//					ImageIcon icon = new ImageIcon("C://Users/aoliva/Desktop/JAVA WORKSPACE/ChatClient/download.png");
+//
+//					ClientGui gui = new ClientGui();
+//					ClientService t = new ClientService("127.0.01",gui,socket, output, input);
+//					gui.addObserver(t);
+//					
+//					gui.setSize(700, 700);
+//					gui.setVisible(true);
+//					gui.buildFrame(icon, gui, new JFrame(), "Client Chat");
+//					
+//					t.startRunning();
+				
+				
+					
 				}
 			} catch (IOException ioException) {
 				ioException.printStackTrace();
@@ -73,6 +90,7 @@ public class ServerService implements Observer {
 
 			// listens to the connection and accepts it
 			socket = serverSocket.accept();
+			
 			counter ++;
 			showMessage("Client number "+counter +" has connected \n");
 			
