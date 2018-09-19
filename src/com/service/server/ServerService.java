@@ -1,3 +1,4 @@
+package com.service.server;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,6 +10,8 @@ import javax.swing.SwingUtilities;
 
 import com.client.observer.Observer;
 import com.client.observer.Subject;
+import com.server.clienthandler.ClientHandler;
+import com.server.gui.ServerGui;
 
 public class ServerService implements Observer {
 	
